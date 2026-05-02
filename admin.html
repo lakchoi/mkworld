@@ -2,72 +2,64 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>MK 맘월드 관리 센터</title>
+    <title>MK MOM WORLD | ADMIN</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 p-6 pb-20">
-    <div class="max-w-2xl mx-auto space-y-10">
-        <h1 class="text-3xl font-black text-center text-slate-800">MK 맘월드 제어판</h1>
+<body class="bg-zinc-50 p-6 font-[Pretendard]">
+    <div class="max-w-xl mx-auto space-y-8">
+        <header class="text-center py-10">
+            <h1 class="text-4xl font-black tracking-tighter text-zinc-900">VIBE CONTROL</h1>
+            <p class="text-zinc-400 mt-2 text-sm uppercase tracking-widest">Master Management System</p>
+        </header>
 
-        <!-- 유튜브 섹션 (제어 포함) -->
-        <div class="bg-blue-600 p-8 rounded-[2.5rem] text-white shadow-xl">
+        <!-- 유튜브 섹션 제어 -->
+        <div class="bg-zinc-900 text-white p-8 rounded-[2rem] shadow-2xl">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold">📺 유튜브 동영상 섹션</h2>
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <span class="text-sm">노출</span>
-                    <input type="checkbox" id="show-yt" class="w-6 h-6 accent-white">
-                </label>
+                <h2 class="text-lg font-bold italic">📺 YOUTUBE VIDEO</h2>
+                <input type="checkbox" id="show-yt" class="w-6 h-6 accent-blue-500">
             </div>
-            <input type="text" id="yt-url" placeholder="유튜브 링크를 붙여넣으세요" class="w-full p-4 rounded-2xl text-slate-900 mb-4">
-            <button onclick="saveYoutube()" class="w-full bg-white text-blue-600 py-4 rounded-2xl font-black hover:bg-blue-50">영상 설정 저장</button>
+            <input type="text" id="yt-url" placeholder="유튜브 링크를 입력하세요" class="w-full p-4 rounded-xl text-zinc-900 mb-4 outline-none">
+            <button onclick="saveYoutube()" class="w-full bg-blue-600 py-4 rounded-xl font-black hover:bg-blue-500 transition">UPDATE VIDEO</button>
         </div>
 
-        <!-- 일반 섹션 1~8 (제어 포함) -->
-        <div id="editor-root" class="space-y-6"></div>
+        <!-- 메인 섹션 1~8 자동 생성 -->
+        <div id="section-list" class="space-y-6"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { 
-                apiKey: "AIzaSyAcVf3Z0i-kXr7KGkC6LdXqP5QqhbNT5eU",
-                authDomain: "mkmomworld.firebaseapp.com",
-                projectId: "mkmomworld",
-                storageBucket: "mkmomworld.firebasestorage.app",
-                messagingSenderId: "479013933003",
-                appId: "1:479013933003:web:bd77a7006c7979ffaff04e",
-                measurementId: "G-PX8W9MKQL6"
-        };
+        const firebaseConfig = { /* 대표님의 파이어베이스 설정값 복사/붙여넣기 */ };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const root = document.getElementById('editor-root');
+        const list = document.getElementById('section-list');
         for(let i=1; i<=8; i++) {
-            root.innerHTML += `
-            <div class="bg-white p-8 rounded-[2.5rem] shadow-md border border-slate-200">
+            list.innerHTML += `
+            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-zinc-200">
                 <div class="flex justify-between items-center mb-6">
-                    <span class="font-black text-xl text-slate-800 italic">SECTION ${i}</span>
-                    <label class="flex items-center gap-2 font-bold cursor-pointer text-blue-600">
-                        홈페이지 노출 <input type="checkbox" id="show-${i}" class="w-6 h-6">
+                    <span class="font-black text-xl italic text-zinc-800">SEC ${i}</span>
+                    <label class="flex items-center gap-2 text-sm font-bold text-zinc-400 cursor-pointer">
+                        SHOW <input type="checkbox" id="show-${i}" class="w-5 h-5 accent-zinc-900">
                     </label>
                 </div>
-                <div class="space-y-4">
-                    <input type="text" id="img-${i}" placeholder="이미지 주소(URL)" class="w-full p-4 rounded-2xl bg-slate-50 border">
-                    <input type="text" id="title-${i}" placeholder="제목 (이미지 위에 표시)" class="w-full p-4 rounded-2xl bg-slate-50 border font-bold">
-                    <textarea id="desc-${i}" placeholder="설명 (이미지 위에 표시)" class="w-full p-4 rounded-2xl bg-slate-50 border h-28"></textarea>
-                    <select id="align-${i}" class="w-full p-4 rounded-2xl bg-white border font-bold text-slate-500">
-                        <option value="items-center text-center">가운데 정렬</option>
-                        <option value="items-start text-left">왼쪽 정렬</option>
-                        <option value="items-end text-right">오른쪽 정렬</option>
+                <div class="space-y-3">
+                    <input type="text" id="img-${i}" placeholder="이미지 URL" class="w-full p-4 rounded-xl bg-zinc-50 border-none ring-1 ring-zinc-200">
+                    <input type="text" id="title-${i}" placeholder="메인 제목" class="w-full p-4 rounded-xl bg-zinc-50 border-none ring-1 ring-zinc-200 font-bold text-zinc-800">
+                    <textarea id="desc-${i}" placeholder="상세 문구 (줄바꿈 가능)" class="w-full p-4 rounded-xl bg-zinc-50 border-none ring-1 ring-zinc-200 h-28 text-zinc-600"></textarea>
+                    <select id="align-${i}" class="w-full p-4 rounded-xl bg-white border ring-1 ring-zinc-200 font-bold">
+                        <option value="items-center text-center">센터 정렬 (Center)</option>
+                        <option value="items-center text-left pl-12">좌측 정렬 (Left)</option>
+                        <option value="items-center text-right pr-12">우측 정렬 (Right)</option>
                     </select>
-                    <button onclick="saveSec(${i})" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-black">섹션 ${i} 데이터 저장</button>
+                    <button onclick="saveSec(${i})" class="w-full bg-zinc-900 text-white py-4 rounded-xl font-bold mt-4 hover:scale-[1.02] transition">SAVE SECTION ${i}</button>
                 </div>
             </div>`;
         }
 
         window.saveSec = async (id) => {
-            const pwd = prompt("비밀번호:");
+            const pwd = prompt("Passcode:");
             if(!pwd) return;
             try {
                 await setDoc(doc(db, "sections", `sec${id}`), {
@@ -78,22 +70,22 @@
                     align: document.getElementById(`align-${id}`).value,
                     adminPassword: pwd
                 });
-                alert("저장 성공!");
-            } catch(e) { alert("오류 발생!"); }
+                alert("Saved successfully!");
+            } catch(e) { alert("Error!"); }
         };
 
         window.saveYoutube = async () => {
             const url = document.getElementById('yt-url').value;
             const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-            const pwd = prompt("비밀번호:");
+            const pwd = prompt("Passcode:");
             try {
                 await setDoc(doc(db, "sections", "youtube"), {
                     show: document.getElementById('show-yt').checked,
                     videoId: videoId,
                     adminPassword: pwd
                 });
-                alert("영상 업데이트 성공!");
-            } catch(e) { alert("오류 발생!"); }
+                alert("Video Updated!");
+            } catch(e) { alert("Error!"); }
         };
     </script>
 </body>

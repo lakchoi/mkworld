@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MK 맘월드 | 함께 만드는 안전동행</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Pretendard', sans-serif; scroll-behavior: smooth; }
+        .glass-effect { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased relative">
+
+    <!-- Header -->
+    <header class="w-full glass-effect sticky top-0 z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="text-2xl font-extrabold tracking-tight text-blue-900">MOM WORLD.</div>
+            <nav class="hidden md:flex space-x-8 font-semibold text-gray-600">
+                <a href="#about" class="hover:text-blue-600 transition">맘월드 소개</a>
+                <a href="#video" class="hover:text-blue-600 transition">캠페인 영상</a>
+                <a href="#campaigns" class="hover:text-blue-600 transition">주요 캠페인</a>
+                <a href="#contact" class="hover:text-blue-600 transition">참여 문의</a>
+            </nav>
+            <a href="https://cafe.naver.com/" target="_blank" class="bg-[#03c75a] text-white px-5 py-2.5 rounded-full font-bold hover:bg-[#02b351] transition shadow-md flex items-center">
+                공식 카페
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="max-w-7xl mx-auto px-6 py-20 text-center">
+        <h1 class="text-5xl md:text-7xl font-extrabold leading-tight tracking-tighter mb-8 text-gray-900">
+            안전은 선택이 아니라, <br />
+            <span class="text-blue-600">함께 만드는 기본입니다.</span>
+        </h1>
+        <p class="text-xl text-gray-600 mb-10 font-medium">사고 후 대처가 아닌 사전 예방 시스템. 맘월드와 함께하세요.</p>
+    </section>
+
+    <!-- 유튜브 영상 섹션 (1회 재생 최적화) -->
+    <section id="video" class="max-w-5xl mx-auto px-6 py-10">
+        <div class="bg-gray-900 rounded-[2.5rem] overflow-hidden shadow-2xl">
+            <div class="aspect-video w-full">
+                <!-- 여기에 실제 유튜브 영상 ID를 넣으세요 (현재는 샘플) -->
+                <iframe 
+                    class="w-full h-full"
+                    src="https://www.youtube.com/embed/S2pE8Y_Bntc?rel=0&modestbranding=1&loop=0" 
+                    title="MK 맘월드 홍보 영상" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+        <p class="text-center mt-6 text-gray-400 text-sm italic">※ 본 영상은 1회 상영 후 멈춥니다.</p>
+    </section>
+
+    <!-- 캠페인 목록 (DB 연동 자리) -->
+    <section id="campaigns" class="max-w-7xl mx-auto px-6 py-24">
+        <h2 class="text-3xl font-extrabold mb-12">현재 진행 중인 캠페인</h2>
+        <div id="campaign-list" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center py-10 text-gray-400">
+            <i class="fa-solid fa-spinner fa-spin"></i> 캠페인을 불러오는 중입니다...
+        </div>
+    </section>
+
+    <!-- 참여 및 제휴 (구글 폼 연동) -->
+    <section id="contact" class="max-w-3xl mx-auto px-6 py-24 bg-white rounded-[3rem] shadow-sm border border-gray-100 text-center mb-20">
+        <h2 class="text-3xl font-extrabold mb-6">참여 및 제휴 문의</h2>
+        <p class="text-gray-500 mb-10 font-medium leading-relaxed">
+            캠페인 참여, 터치소리 공동구매 등 <br>구글 신청서를 통해 접수해 주시면 담당자가 연락드립니다.
+        </p>
+        <a href="https://forms.gle/여기에_실제_구글폼_주소" target="_blank" class="inline-block bg-blue-600 text-white font-bold text-lg px-12 py-5 rounded-2xl hover:bg-blue-700 transition shadow-xl">
+            신청서 작성하기 (Google Forms)
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-gray-100 text-center text-gray-500 text-sm font-medium">
+        <p>&copy; 2024 밀레니엄코리아(MK) 맘월드. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

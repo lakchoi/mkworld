@@ -2,58 +2,64 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>MK 맘월드 관리자</title>
+    <title>MK 맘월드 관리 센터</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-3xl mx-auto space-y-6">
-        <h1 class="text-3xl font-bold text-center mb-10 text-slate-800">홈페이지 통합 관리창</h1>
+<body class="bg-slate-100 p-6 pb-20">
+    <div class="max-w-2xl mx-auto space-y-10">
+        <h1 class="text-3xl font-black text-center text-slate-800">MK 맘월드 제어판</h1>
 
-        <!-- 섹션 편집기 1~8번 (동일한 틀) -->
-        <div id="editor-root" class="space-y-8"></div>
-
-        <!-- 유튜브 전용 편집기 -->
-        <div class="p-6 bg-blue-50 rounded-3xl border-2 border-blue-200">
-            <h2 class="font-bold text-blue-800 mb-4 text-lg">📺 유튜브 영상 섹션 (중간 배치)</h2>
-            <div class="flex items-center gap-4 mb-4">
-                <input type="checkbox" id="show-yt" class="w-6 h-6">
-                <span class="font-medium text-blue-700">메인 화면에 노출</span>
+        <!-- 유튜브 섹션 (제어 포함) -->
+        <div class="bg-blue-600 p-8 rounded-[2.5rem] text-white shadow-xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">📺 유튜브 동영상 섹션</h2>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <span class="text-sm">노출</span>
+                    <input type="checkbox" id="show-yt" class="w-6 h-6 accent-white">
+                </label>
             </div>
-            <input type="text" id="yt-url" placeholder="유튜브 링크 입력" class="w-full p-4 rounded-xl border-none shadow-inner mb-4">
-            <button onclick="saveYoutube()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700">영상 데이터 저장</button>
+            <input type="text" id="yt-url" placeholder="유튜브 링크를 붙여넣으세요" class="w-full p-4 rounded-2xl text-slate-900 mb-4">
+            <button onclick="saveYoutube()" class="w-full bg-white text-blue-600 py-4 rounded-2xl font-black hover:bg-blue-50">영상 설정 저장</button>
         </div>
+
+        <!-- 일반 섹션 1~8 (제어 포함) -->
+        <div id="editor-root" class="space-y-6"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { /* 대표님 프로젝트 설정값 입력 */ };
+        const firebaseConfig = { /* 대표님의 Config 정보를 여기에 넣으세요 */ };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 8개 섹션 틀 생성
         const root = document.getElementById('editor-root');
         for(let i=1; i<=8; i++) {
             root.innerHTML += `
-            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-200">
-                <div class="flex justify-between items-center mb-6 text-slate-600">
-                    <span class="font-black text-xl">SECTION ${i} ${i > 6 ? '(푸터 위)' : ''}</span>
-                    <label class="flex items-center gap-2 font-bold cursor-pointer">
-                        보이기 <input type="checkbox" id="show-${i}" class="w-6 h-6 accent-slate-800">
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-md border border-slate-200">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="font-black text-xl text-slate-800 italic">SECTION ${i}</span>
+                    <label class="flex items-center gap-2 font-bold cursor-pointer text-blue-600">
+                        홈페이지 노출 <input type="checkbox" id="show-${i}" class="w-6 h-6">
                     </label>
                 </div>
                 <div class="space-y-4">
-                    <input type="text" id="img-${i}" placeholder="이미지 주소(URL) 입력" class="w-full p-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200">
-                    <input type="text" id="title-${i}" placeholder="주제/제목 입력" class="w-full p-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200 font-bold">
-                    <textarea id="desc-${i}" placeholder="상세 문구 입력" class="w-full p-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200 h-32"></textarea>
-                    <button onclick="saveSec(${i})" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-black transition">섹션 ${i} 내용 저장하기</button>
+                    <input type="text" id="img-${i}" placeholder="이미지 주소(URL)" class="w-full p-4 rounded-2xl bg-slate-50 border">
+                    <input type="text" id="title-${i}" placeholder="제목 (이미지 위에 표시)" class="w-full p-4 rounded-2xl bg-slate-50 border font-bold">
+                    <textarea id="desc-${i}" placeholder="설명 (이미지 위에 표시)" class="w-full p-4 rounded-2xl bg-slate-50 border h-28"></textarea>
+                    <select id="align-${i}" class="w-full p-4 rounded-2xl bg-white border font-bold text-slate-500">
+                        <option value="items-center text-center">가운데 정렬</option>
+                        <option value="items-start text-left">왼쪽 정렬</option>
+                        <option value="items-end text-right">오른쪽 정렬</option>
+                    </select>
+                    <button onclick="saveSec(${i})" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-black">섹션 ${i} 데이터 저장</button>
                 </div>
             </div>`;
         }
 
         window.saveSec = async (id) => {
-            const pwd = prompt("관리자 암호:");
+            const pwd = prompt("비밀번호:");
             if(!pwd) return;
             try {
                 await setDoc(doc(db, "sections", `sec${id}`), {
@@ -61,24 +67,25 @@
                     img: document.getElementById(`img-${id}`).value,
                     title: document.getElementById(`title-${id}`).value,
                     desc: document.getElementById(`desc-${id}`).value,
+                    align: document.getElementById(`align-${id}`).value,
                     adminPassword: pwd
                 });
                 alert("저장 성공!");
-            } catch(e) { alert("비밀번호를 확인하세요."); }
+            } catch(e) { alert("오류 발생!"); }
         };
 
         window.saveYoutube = async () => {
             const url = document.getElementById('yt-url').value;
             const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-            const pwd = prompt("관리자 암호:");
+            const pwd = prompt("비밀번호:");
             try {
                 await setDoc(doc(db, "sections", "youtube"), {
                     show: document.getElementById('show-yt').checked,
                     videoId: videoId,
                     adminPassword: pwd
                 });
-                alert("유튜브 업데이트 성공!");
-            } catch(e) { alert("실패!"); }
+                alert("영상 업데이트 성공!");
+            } catch(e) { alert("오류 발생!"); }
         };
     </script>
 </body>

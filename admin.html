@@ -30,7 +30,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { /* 대표님의 Config 정보를 여기에 넣으세요 */ };
+        const firebaseConfig = { 
+                apiKey: "AIzaSyAcVf3Z0i-kXr7KGkC6LdXqP5QqhbNT5eU",
+                authDomain: "mkmomworld.firebaseapp.com",
+                projectId: "mkmomworld",
+                storageBucket: "mkmomworld.firebasestorage.app",
+                messagingSenderId: "479013933003",
+                appId: "1:479013933003:web:bd77a7006c7979ffaff04e",
+                measurementId: "G-PX8W9MKQL6"
+        };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 

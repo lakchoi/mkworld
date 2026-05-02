@@ -2,108 +2,83 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MK 맘월드 | 보안 관리자 모드</title>
+    <title>MK 맘월드 관리자</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
-    <style>body { font-family: 'Pretendard', sans-serif; }</style>
 </head>
-<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-100 p-8">
+    <div class="max-w-3xl mx-auto space-y-6">
+        <h1 class="text-3xl font-bold text-center mb-10 text-slate-800">홈페이지 통합 관리창</h1>
 
-    <div class="max-w-md w-full bg-white rounded-[2.5rem] shadow-xl p-8 border border-gray-100">
-        <!-- 헤더 -->
-        <div class="text-center mb-8">
-            <div class="inline-block bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm font-bold mb-3">Admin Only</div>
-            <h1 class="text-2xl font-black text-slate-800">캠페인 보안 등록</h1>
-            <p class="text-slate-500 text-sm mt-2">비밀번호가 있어야 서버에 저장됩니다.</p>
-        </div>
+        <!-- 섹션 편집기 1~8번 (동일한 틀) -->
+        <div id="editor-root" class="space-y-8"></div>
 
-        <!-- 입력 폼 -->
-        <div class="space-y-5">
-            <div>
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">카테고리</label>
-                <input id="category" type="text" placeholder="예: 안전동행, 교육지원" class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition duration-200">
+        <!-- 유튜브 전용 편집기 -->
+        <div class="p-6 bg-blue-50 rounded-3xl border-2 border-blue-200">
+            <h2 class="font-bold text-blue-800 mb-4 text-lg">📺 유튜브 영상 섹션 (중간 배치)</h2>
+            <div class="flex items-center gap-4 mb-4">
+                <input type="checkbox" id="show-yt" class="w-6 h-6">
+                <span class="font-medium text-blue-700">메인 화면에 노출</span>
             </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">캠페인 제목</label>
-                <input id="title" type="text" placeholder="제목을 입력하세요" class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition duration-200">
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">상세 내용</label>
-                <textarea id="desc" rows="4" placeholder="내용을 입력하세요" class="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition duration-200 resize-none"></textarea>
-            </div>
-
-            <div class="pt-2">
-                <button onclick="uploadCampaign()" id="submitBtn" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-blue-600 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-slate-200">
-                    홈페이지에 안전하게 게시하기
-                </button>
-            </div>
+            <input type="text" id="yt-url" placeholder="유튜브 링크 입력" class="w-full p-4 rounded-xl border-none shadow-inner mb-4">
+            <button onclick="saveYoutube()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700">영상 데이터 저장</button>
         </div>
     </div>
 
-    <!-- Firebase 연결 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // 🔥 [필수] 대표님의 실제 firebaseConfig 값을 여기에 복사해서 넣으세요!
-        const firebaseConfig = {
-            apiKey: "AIzaSyAcVf3Z0i-kXr7KGkC6LdXqP5QqhbNT5eU",
-            authDomain: "mkmomworld.firebaseapp.com",
-            projectId: "mkmomworld",
-            storageBucket: "mkmomworld.firebasestorage.app",
-            messagingSenderId: "479013933003",
-            appId: "1:479013933003:web:bd77a7006c7979ffaff04e",
-            measurementId: "G-PX8W9MKQL6"
-        };
-
+        const firebaseConfig = { /* 대표님 프로젝트 설정값 입력 */ };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        window.uploadCampaign = async () => {
-            const category = document.getElementById('category').value;
-            const title = document.getElementById('title').value;
-            const desc = document.getElementById('desc').value;
-            const btn = document.getElementById('submitBtn');
+        // 8개 섹션 틀 생성
+        const root = document.getElementById('editor-root');
+        for(let i=1; i<=8; i++) {
+            root.innerHTML += `
+            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-200">
+                <div class="flex justify-between items-center mb-6 text-slate-600">
+                    <span class="font-black text-xl">SECTION ${i} ${i > 6 ? '(푸터 위)' : ''}</span>
+                    <label class="flex items-center gap-2 font-bold cursor-pointer">
+                        보이기 <input type="checkbox" id="show-${i}" class="w-6 h-6 accent-slate-800">
+                    </label>
+                </div>
+                <div class="space-y-4">
+                    <input type="text" id="img-${i}" placeholder="이미지 주소(URL) 입력" class="w-full p-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200">
+                    <input type="text" id="title-${i}" placeholder="주제/제목 입력" class="w-full p-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200 font-bold">
+                    <textarea id="desc-${i}" placeholder="상세 문구 입력" class="w-full p-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200 h-32"></textarea>
+                    <button onclick="saveSec(${i})" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-black transition">섹션 ${i} 내용 저장하기</button>
+                </div>
+            </div>`;
+        }
 
-            if(!category || !title || !desc) {
-                alert("빈칸을 모두 채워주세요!");
-                return;
-            }
-
-            // 1. 비밀번호 물어보기
-            const password = prompt("보안 비밀번호를 입력하세요:");
-            if(!password) return;
-
-            btn.disabled = true;
-            btn.innerText = "보안 검토 중...";
-
+        window.saveSec = async (id) => {
+            const pwd = prompt("관리자 암호:");
+            if(!pwd) return;
             try {
-                // 2. 서버에 데이터 보낼 때 비밀번호 필드를 포함 (adminPassword)
-                await addDoc(collection(db, "campaigns"), {
-                    category: category,
-                    title: title,
-                    desc: desc,
-                    adminPassword: password, // 규칙에서 검사할 필드
-                    createdAt: serverTimestamp()
+                await setDoc(doc(db, "sections", `sec${id}`), {
+                    show: document.getElementById(`show-${id}`).checked,
+                    img: document.getElementById(`img-${id}`).value,
+                    title: document.getElementById(`title-${id}`).value,
+                    desc: document.getElementById(`desc-${id}`).value,
+                    adminPassword: pwd
                 });
-                
-                alert("✅ 인증 성공! 캠페인이 등록되었습니다.");
-                
-                // 입력창 초기화
-                document.getElementById('category').value = '';
-                document.getElementById('title').value = '';
-                document.getElementById('desc').value = '';
+                alert("저장 성공!");
+            } catch(e) { alert("비밀번호를 확인하세요."); }
+        };
 
-            } catch (e) {
-                console.error("에러 내용:", e);
-                alert("❌ 등록 실패: 비밀번호가 틀렸거나 권한이 없습니다.");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "홈페이지에 안전하게 게시하기";
-            }
+        window.saveYoutube = async () => {
+            const url = document.getElementById('yt-url').value;
+            const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+            const pwd = prompt("관리자 암호:");
+            try {
+                await setDoc(doc(db, "sections", "youtube"), {
+                    show: document.getElementById('show-yt').checked,
+                    videoId: videoId,
+                    adminPassword: pwd
+                });
+                alert("유튜브 업데이트 성공!");
+            } catch(e) { alert("실패!"); }
         };
     </script>
 </body>

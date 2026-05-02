@@ -1,85 +1,44 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>MK 맘월드 관리자</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-3xl mx-auto space-y-6">
-        <h1 class="text-3xl font-bold text-center mb-10 text-slate-800">홈페이지 통합 관리창</h1>
+<!-- ... (헤더 부분 동일) ... -->
+<div id="main-frame" class="w-full overflow-x-hidden"></div>
+<!-- ... (푸터 부분 동일) ... -->
 
-        <!-- 섹션 편집기 1~8번 (동일한 틀) -->
-        <div id="editor-root" class="space-y-8"></div>
+<script type="module">
+    // ... (파이어베이스 설정 부분 동일) ...
 
-        <!-- 유튜브 전용 편집기 -->
-        <div class="p-6 bg-blue-50 rounded-3xl border-2 border-blue-200">
-            <h2 class="font-bold text-blue-800 mb-4 text-lg">📺 유튜브 영상 섹션 (중간 배치)</h2>
-            <div class="flex items-center gap-4 mb-4">
-                <input type="checkbox" id="show-yt" class="w-6 h-6">
-                <span class="font-medium text-blue-700">메인 화면에 노출</span>
-            </div>
-            <input type="text" id="yt-url" placeholder="유튜브 링크 입력" class="w-full p-4 rounded-xl border-none shadow-inner mb-4">
-            <button onclick="saveYoutube()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700">영상 데이터 저장</button>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = { /* 대표님 프로젝트 설정값 입력 */ };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // 8개 섹션 틀 생성
-        const root = document.getElementById('editor-root');
+    onSnapshot(collection(db, "sections"), (snapshot) => {
+        const frame = document.getElementById('main-frame');
+        const data = {};
+        snapshot.forEach(doc => data[doc.id] = doc.data());
+        
+        let html = '';
         for(let i=1; i<=8; i++) {
-            root.innerHTML += `
-            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-200">
-                <div class="flex justify-between items-center mb-6 text-slate-600">
-                    <span class="font-black text-xl">SECTION ${i} ${i > 6 ? '(푸터 위)' : ''}</span>
-                    <label class="flex items-center gap-2 font-bold cursor-pointer">
-                        보이기 <input type="checkbox" id="show-${i}" class="w-6 h-6 accent-slate-800">
-                    </label>
-                </div>
-                <div class="space-y-4">
-                    <input type="text" id="img-${i}" placeholder="이미지 주소(URL) 입력" class="w-full p-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200">
-                    <input type="text" id="title-${i}" placeholder="주제/제목 입력" class="w-full p-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200 font-bold">
-                    <textarea id="desc-${i}" placeholder="상세 문구 입력" class="w-full p-4 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-200 h-32"></textarea>
-                    <button onclick="saveSec(${i})" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-black transition">섹션 ${i} 내용 저장하기</button>
-                </div>
-            </div>`;
+            const s = data[`sec${i}`];
+            // ⭐️ 여기서 s.show 가 체크된 섹션만 보여줍니다!
+            if(s && s.show) {
+                html += `
+                <section class="relative w-full h-[600px] flex ${s.align} justify-center px-10 overflow-hidden mb-2">
+                    <img src="${s.img}" class="absolute inset-0 w-full h-full object-cover z-0">
+                    <div class="absolute inset-0 bg-black/40 z-10"></div>
+                    <div class="relative z-20 text-white max-w-2xl animate-fade-in">
+                        <h2 class="text-5xl font-black mb-6 drop-shadow-2xl leading-tight">${s.title}</h2>
+                        <p class="text-xl opacity-90 leading-relaxed whitespace-pre-wrap drop-shadow-md">${s.desc}</p>
+                    </div>
+                </section>`;
+            }
+            
+            // ⭐️ 유튜브 섹션도 show 가 체크되었을 때만 노출!
+            if(i === 6) {
+                const yt = data['youtube'];
+                if(yt && yt.show) {
+                    html += `
+                    <section class="bg-black py-24 px-6">
+                        <div class="max-w-4xl mx-auto aspect-video rounded-[3rem] overflow-hidden shadow-2xl border border-white/10">
+                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/${yt.videoId}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </section>`;
+                }
+            }
         }
-
-        window.saveSec = async (id) => {
-            const pwd = prompt("관리자 암호:");
-            if(!pwd) return;
-            try {
-                await setDoc(doc(db, "sections", `sec${id}`), {
-                    show: document.getElementById(`show-${id}`).checked,
-                    img: document.getElementById(`img-${id}`).value,
-                    title: document.getElementById(`title-${id}`).value,
-                    desc: document.getElementById(`desc-${id}`).value,
-                    adminPassword: pwd
-                });
-                alert("저장 성공!");
-            } catch(e) { alert("비밀번호를 확인하세요."); }
-        };
-
-        window.saveYoutube = async () => {
-            const url = document.getElementById('yt-url').value;
-            const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-            const pwd = prompt("관리자 암호:");
-            try {
-                await setDoc(doc(db, "sections", "youtube"), {
-                    show: document.getElementById('show-yt').checked,
-                    videoId: videoId,
-                    adminPassword: pwd
-                });
-                alert("유튜브 업데이트 성공!");
-            } catch(e) { alert("실패!"); }
-        };
-    </script>
-</body>
-</html>
+        frame.innerHTML = html;
+    });
+</script>

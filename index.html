@@ -33,7 +33,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { /* 대표님의 파이어베이스 설정값 복사/붙여넣기 (어드민과 동일하게) */ };
+        const firebaseConfig = {     
+        apiKey: "AIzaSyAcVf3Z0i-kXr7KGkC6LdXqP5QqhbNT5eU",
+        authDomain: "mkmomworld.firebaseapp.com",
+        projectId: "mkmomworld",
+        storageBucket: "mkmomworld.firebasestorage.app",
+        messagingSenderId: "479013933003",
+        appId: "1:479013933003:web:bd77a7006c7979ffaff04e",
+        measurementId: "G-PX8W9MKQL6"
+        };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
